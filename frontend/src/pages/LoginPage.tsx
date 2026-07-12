@@ -4,6 +4,7 @@ import { Truck, Mail, Lock, ArrowRight } from 'lucide-react'
 import { Input } from '@/components/ui/Input'
 import { Card } from '@/components/ui/Card'
 import { motion } from 'framer-motion'
+import client from '@/api/client'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -18,14 +19,22 @@ export default function LoginPage() {
     setError('')
 
     try {
-      // Simulate API call
-      setTimeout(() => {
-        localStorage.setItem('access_token', 'mock-jwt-token-' + Date.now())
-        navigate('/')
-        setLoading(false)
-      }, 800)
-    } catch (err) {
-      setError('Login failed. Please try again.')
+      // Call real backend API
+      const response = await client.post('/auth/login', {
+        username: email,
+        password: password,
+      })
+
+      // Store JWT token
+      const { access_token } = response.data
+      localStorage.setItem('access_token', access_token)
+
+      // Navigate to dashboard
+      navigate('/')
+      setLoading(false)
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.detail || 'Login failed. Please try again.'
+      setError(errorMessage)
       setLoading(false)
     }
   }
