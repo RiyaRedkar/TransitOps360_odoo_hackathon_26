@@ -17,10 +17,14 @@ class EventCreate(EventBase):
     performed_by: Optional[uuid.UUID] = None
 
 
-class EventResponse(EventBase):
+class EventResponse(BaseModel):
     """Event response schema."""
     id: uuid.UUID
+    event_type: str
+    entity_type: str
+    entity_id: uuid.UUID
     performed_by: Optional[uuid.UUID]
+    metadata_json: Dict[str, Any]
     created_at: datetime
     
     model_config = ConfigDict(from_attributes=True)
@@ -44,11 +48,14 @@ class NotificationCreate(NotificationBase):
     user_id: uuid.UUID
 
 
-class NotificationResponse(NotificationBase):
+class NotificationResponse(BaseModel):
     """Notification response schema."""
     id: uuid.UUID
     user_id: uuid.UUID
+    message: str
+    type: str
     is_read: bool
+    metadata_json: Dict[str, Any]
     created_at: datetime
     
     model_config = ConfigDict(from_attributes=True)
