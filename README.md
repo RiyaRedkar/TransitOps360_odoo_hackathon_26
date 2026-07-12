@@ -1,8 +1,8 @@
 # TransitOps360
 
-**Fleet Operations ERP with Operational Intelligence**
+**Fleet Operations ERP with Operational Intelligence and Analytics**
 
-Built in 6 hours for Odoo Hackathon 2026. Production-grade backend with smart dispatch, compliance tracking, and complete audit trails.
+Built for Odoo Hackathon 2026. A modern fleet operations ERP combining business rule enforcement, operational analytics, and end-to-end workflow automation.
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React_19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
