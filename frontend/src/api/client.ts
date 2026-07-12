@@ -30,9 +30,16 @@ client.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Redirect to login on unauthorized
-      localStorage.removeItem('access_token')
-      window.location.href = '/login'
+      // Only redirect if not already on login page and token exists
+      const currentPath = window.location.pathname
+      const hasToken = localStorage.getItem('access_token')
+      
+      if (currentPath !== '/login' && hasToken) {
+        // Clear invalid token
+        localStorage.removeItem('access_token')
+        console.log('Token invalid or expired, redirecting to login')
+        window.location.href = '/login'
+      }
     }
     return Promise.reject(error)
   }

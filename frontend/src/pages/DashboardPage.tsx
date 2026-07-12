@@ -50,13 +50,23 @@ const alerts = [
 export default function DashboardPage() {
   const [dateRange, setDateRange] = useState('week')
   
-  const { data: summary, isLoading: summaryLoading } = useDashboardSummary()
+  const { data: summary, isLoading: summaryLoading, error: summaryError } = useDashboardSummary()
   const { data: tripsData, isLoading: tripsLoading } = useTrips({ limit: 10 })
 
   if (summaryLoading) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-[color:var(--text-secondary)]">Loading dashboard...</div>
+      </div>
+    )
+  }
+
+  if (summaryError) {
+    return (
+      <div className="flex flex-col items-center justify-center h-96 space-y-4">
+        <AlertTriangle className="text-[#EF4444]" size={48} />
+        <div className="text-[color:var(--text-primary)] text-lg font-semibold">Failed to load dashboard</div>
+        <div className="text-[color:var(--text-secondary)] text-sm">Please try refreshing the page</div>
       </div>
     )
   }

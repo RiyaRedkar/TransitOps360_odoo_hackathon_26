@@ -30,8 +30,11 @@ export default function LoginPage() {
       const { access_token } = response.data
       localStorage.setItem('access_token', access_token)
 
+      // Small delay to ensure localStorage write completes
+      await new Promise(resolve => setTimeout(resolve, 100))
+
       // Navigate to dashboard
-      navigate('/')
+      navigate('/', { replace: true })
       setLoading(false)
     } catch (err: any) {
       const errorMessage = err.response?.data?.detail || 'Login failed. Please try again.'
