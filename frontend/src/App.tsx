@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'sonner'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { AppLayout } from './components/layout/AppLayout'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
@@ -16,18 +17,22 @@ import ExpensesPage from './pages/ExpensesPage'
 
 // Protected Route Component
 function ProtectedRoute() {
-  const token = localStorage.getItem('access_token')
+  const { isAuthenticated } = useAuth()
   
-  if (!token) {
+  console.log('🔒 ProtectedRoute check - Authenticated:', isAuthenticated)
+  
+  if (!isAuthenticated) {
+    console.log('❌ Not authenticated, redirecting to /login')
     return <Navigate to="/login" replace />
   }
   
+  console.log('✅ Authenticated, rendering AppLayout')
   return <AppLayout />
 }
 
 function App() {
   return (
-    <>
+    <AuthProvider>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route element={<ProtectedRoute />}>
@@ -45,7 +50,7 @@ function App() {
         </Route>
       </Routes>
       <Toaster position="top-right" richColors closeButton />
-    </>
+    </AuthProvider>
   )
 }
 

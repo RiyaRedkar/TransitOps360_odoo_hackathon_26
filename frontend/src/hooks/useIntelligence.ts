@@ -5,7 +5,9 @@ export const useDashboardSummary = () => {
   return useQuery({
     queryKey: ['intelligence', 'dashboard-summary'],
     queryFn: () => intelligenceService.getDashboardSummary(),
-    refetchInterval: 30000, // Refetch every 30 seconds
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    retry: 1, // Only retry once on failure
+    refetchOnWindowFocus: false, // Don't refetch when window regains focus
   })
 }
 

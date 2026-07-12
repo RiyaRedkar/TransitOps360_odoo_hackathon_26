@@ -5,9 +5,11 @@ import { Input } from '@/components/ui/Input'
 import { Card } from '@/components/ui/Card'
 import { motion } from 'framer-motion'
 import client from '@/api/client'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function LoginPage() {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [username, setUsername] = useState('admin')
   const [password, setPassword] = useState('admin123')
   const [showPassword, setShowPassword] = useState(false)
@@ -26,17 +28,24 @@ export default function LoginPage() {
         password: password,
       })
 
-      // Store JWT token
+      // Store JWT token via auth context
       const { access_token } = response.data
-      localStorage.setItem('access_token', access_token)
-
-      // Small delay to ensure localStorage write completes
-      await new Promise(resolve => setTimeout(resolve, 100))
+      console.log('✅ Login successful, token received:', access_token.substring(0, 50) + '...')
+      
+      // Use auth context to set token (this will update state and localStorage)
+      login(access_token)
+      console.log('💾 Token stored via AuthContext')
 
       // Navigate to dashboard
+      console.log('🚀 Navigating to dashboard')
       navigate('/', { replace: true })
       setLoading(false)
     } catch (err: any) {
+      const errorMessage = err.response?.data?.detail || 'Login failed. Please try again.'
+      setError(errorMessage)
+      setLoading(false)
+    }
+  }
       const errorMessage = err.response?.data?.detail || 'Login failed. Please try again.'
       setError(errorMessage)
       setLoading(false)

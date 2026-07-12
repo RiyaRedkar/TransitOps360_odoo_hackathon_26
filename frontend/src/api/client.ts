@@ -17,6 +17,9 @@ client.interceptors.request.use(
     const token = localStorage.getItem('access_token')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
+      console.log('🔑 Request with token to:', config.url)
+    } else {
+      console.warn('⚠️ No token found for request to:', config.url)
     }
     return config
   },
@@ -29,15 +32,21 @@ client.interceptors.request.use(
 client.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.error('❌ API Error:', {
+      status: error.response?.status,
+      url: error.config?.url,
+      message: error.response?.data?.detail || error.message
+    })
+    
     if (error.response?.status === 401) {
-      // Only redirect if not already on login page and token exists
       const currentPath = window.location.pathname
-      const hasToken = localStorage.getItem('access_token')
       
-      if (currentPath !== '/login' && hasToken) {
-        // Clear invalid token
+      console.log('🚨 401 Error - Current path:', currentPath)
+      
+      // Don't redirect if we're already on the login page or it's the login request itself
+      if (currentPath !== '/login' && !error.config?.url?.includes('/auth/login')) {
+        console.log('🔄 Unauthorized, clearing token and redirecting')
         localStorage.removeItem('access_token')
-        console.log('Token invalid or expired, redirecting to login')
         window.location.href = '/login'
       }
     }
