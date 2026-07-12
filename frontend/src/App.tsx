@@ -10,6 +10,8 @@ import CompliancePage from './pages/CompliancePage'
 import AnalyticsPage from './pages/AnalyticsPage'
 import ReportsPage from './pages/ReportsPage'
 import SettingsPage from './pages/SettingsPage'
+import FuelPage from './pages/FuelPage'
+import ExpensesPage from './pages/ExpensesPage'
 
 // Protected Route Component
 function ProtectedRoute() {
@@ -35,6 +37,8 @@ function App() {
         <Route path="/compliance" element={<CompliancePage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/reports" element={<ReportsPage />} />
+        <Route path="/fuel" element={<FuelPage />} />
+        <Route path="/expenses" element={<ExpensesPage />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Route>
     </Routes>
