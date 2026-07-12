@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Truck, Mail, Lock, ArrowRight } from 'lucide-react'
+import { Truck, User, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react'
 import { Input } from '@/components/ui/Input'
 import { Card } from '@/components/ui/Card'
 import { motion } from 'framer-motion'
@@ -8,8 +8,9 @@ import client from '@/api/client'
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const [email, setEmail] = useState('admin@transit.com')
+  const [username, setUsername] = useState('admin')
   const [password, setPassword] = useState('admin123')
+  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -21,7 +22,7 @@ export default function LoginPage() {
     try {
       // Call real backend API
       const response = await client.post('/auth/login', {
-        username: email,
+        username: username,
         password: password,
       })
 
@@ -81,20 +82,20 @@ export default function LoginPage() {
             <p className="text-[#CBD5E1] text-sm mb-6">Sign in to your account to continue</p>
 
             <form onSubmit={handleLogin} className="space-y-4">
-              {/* Email Field */}
+              {/* Username Field */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
               >
-                <label className="block text-sm font-medium text-[#F8FAFC] mb-2">Email</label>
+                <label className="block text-sm font-medium text-[#F8FAFC] mb-2">Username</label>
                 <div className="relative">
-                  <Mail size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#94A3B8]" />
+                  <User size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#94A3B8]" />
                   <Input
-                    type="email"
-                    placeholder="admin@transit.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    type="text"
+                    placeholder="admin"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     className="pl-9"
                     required
                   />
@@ -111,13 +112,21 @@ export default function LoginPage() {
                 <div className="relative">
                   <Lock size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#94A3B8]" />
                   <Input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-9"
+                    className="pl-9 pr-10"
                     required
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#94A3B8] hover:text-[#F8FAFC] transition-colors"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
                 </div>
               </motion.div>
 
@@ -172,7 +181,7 @@ export default function LoginPage() {
             <div className="mt-6 pt-6 border-t border-[rgba(255,255,255,0.08)]">
               <p className="text-xs text-[#94A3B8] mb-2">Demo Credentials:</p>
               <div className="space-y-1 text-xs">
-                <p className="text-[#CBD5E1]">Email: <span className="text-[#2563EB] font-mono">admin@transit.com</span></p>
+                <p className="text-[#CBD5E1]">Username: <span className="text-[#2563EB] font-mono">admin</span></p>
                 <p className="text-[#CBD5E1]">Password: <span className="text-[#2563EB] font-mono">admin123</span></p>
               </div>
             </div>
