@@ -38,19 +38,18 @@ client.interceptors.response.use(
       message: error.response?.data?.detail || error.message
     })
     
-    // TEMPORARILY DISABLED 401 REDIRECT FOR DEBUGGING
-    // if (error.response?.status === 401) {
-    //   const currentPath = window.location.pathname
-    //   
-    //   console.log('🚨 401 Error - Current path:', currentPath)
-    //   
-    //   // Don't redirect if we're already on the login page or it's the login request itself
-    //   if (currentPath !== '/login' && !error.config?.url?.includes('/auth/login')) {
-    //     console.log('🔄 Unauthorized, clearing token and redirecting')
-    //     localStorage.removeItem('access_token')
-    //     window.location.href = '/login'
-    //   }
-    // }
+    if (error.response?.status === 401) {
+      const currentPath = window.location.pathname
+      
+      console.log('🚨 401 Error - Current path:', currentPath)
+      
+      // Don't redirect if we're already on the login page or it's the login request itself
+      if (currentPath !== '/login' && !error.config?.url?.includes('/auth/login')) {
+        console.log('🔄 Unauthorized, clearing token and redirecting')
+        localStorage.removeItem('access_token')
+        window.location.href = '/login'
+      }
+    }
     return Promise.reject(error)
   }
 )
