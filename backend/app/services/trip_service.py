@@ -21,7 +21,7 @@ class TripService:
         limit: int = 100
     ) -> List[Trip]:
         """Get all trips with optional filtering."""
-        query = db.query(Trip).filter(Trip.is_active == True)
+        query = db.query(Trip)
         
         if status:
             query = query.filter(Trip.status == status)
@@ -37,10 +37,7 @@ class TripService:
     @staticmethod
     def get_by_id(db: Session, trip_id: uuid.UUID) -> Optional[Trip]:
         """Get trip by ID."""
-        return db.query(Trip).filter(
-            Trip.id == trip_id,
-            Trip.is_active == True
-        ).first()
+        return db.query(Trip).filter(Trip.id == trip_id).first()
     
     @staticmethod
     def create(db: Session, trip_data: TripCreate, created_by: uuid.UUID) -> Trip:
@@ -54,8 +51,7 @@ class TripService:
             cargo_description=trip_data.cargo_description,
             revenue=trip_data.revenue,
             status=TripStatus.DRAFT,
-            created_by=created_by,
-            is_active=True
+            created_by=created_by
         )
         
         db.add(trip)

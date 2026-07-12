@@ -25,7 +25,7 @@ class MaintenanceService:
         limit: int = 100
     ) -> List[MaintenanceLog]:
         """Get all maintenance logs with optional filtering."""
-        query = db.query(MaintenanceLog).filter(MaintenanceLog.is_active == True)
+        query = db.query(MaintenanceLog)
         
         if vehicle_id:
             query = query.filter(MaintenanceLog.vehicle_id == vehicle_id)
@@ -38,10 +38,7 @@ class MaintenanceService:
     @staticmethod
     def get_maintenance_by_id(db: Session, maintenance_id: uuid.UUID) -> Optional[MaintenanceLog]:
         """Get maintenance log by ID."""
-        return db.query(MaintenanceLog).filter(
-            MaintenanceLog.id == maintenance_id,
-            MaintenanceLog.is_active == True
-        ).first()
+        return db.query(MaintenanceLog).filter(MaintenanceLog.id == maintenance_id).first()
     
     @staticmethod
     def create_maintenance(
@@ -68,8 +65,7 @@ class MaintenanceService:
             scheduled_date=maintenance_data.scheduled_date,
             status=MaintenanceStatus.ACTIVE,
             cost=maintenance_data.cost,
-            created_by=created_by,
-            is_active=True
+            created_by=created_by
         )
         
         # If scheduled for today or past, set vehicle to maintenance

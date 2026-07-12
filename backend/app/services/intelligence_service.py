@@ -28,7 +28,7 @@ class IntelligenceService:
         ).count()
         maintenance_vehicles = db.query(Vehicle).filter(
             Vehicle.is_active == True,
-            Vehicle.status == VehicleStatus.MAINTENANCE
+            Vehicle.status == VehicleStatus.IN_SHOP
         ).count()
         
         # Driver counts
@@ -44,18 +44,15 @@ class IntelligenceService:
         
         # Trip counts
         active_trips = db.query(Trip).filter(
-            Trip.is_active == True,
             Trip.status == TripStatus.DISPATCHED
         ).count()
         completed_today = db.query(Trip).filter(
-            Trip.is_active == True,
             Trip.status == TripStatus.COMPLETED,
             func.date(Trip.completed_at) == date.today()
         ).count()
         
         # Maintenance counts
         pending_maintenance = db.query(MaintenanceLog).filter(
-            MaintenanceLog.is_active == True,
             MaintenanceLog.status == MaintenanceStatus.ACTIVE
         ).count()
         
@@ -66,7 +63,6 @@ class IntelligenceService:
         
         # Today's revenue
         today_revenue = db.query(func.sum(Trip.revenue)).filter(
-            Trip.is_active == True,
             Trip.status == TripStatus.COMPLETED,
             func.date(Trip.completed_at) == date.today()
         ).scalar() or Decimal(0)
@@ -117,7 +113,6 @@ class IntelligenceService:
         
         # Upcoming maintenance (next 30 days)
         upcoming_maintenance = db.query(func.count(MaintenanceLog.id)).filter(
-            MaintenanceLog.is_active == True,
             MaintenanceLog.status == MaintenanceStatus.ACTIVE,
             MaintenanceLog.scheduled_date <= date.today() + timedelta(days=30)
         ).scalar() or 0
@@ -140,19 +135,8 @@ class IntelligenceService:
             Driver.license_expiry <= warning_threshold
         ).all()
         
-        # Vehicle insurance expiry
-        expiring_insurance = db.query(Vehicle).filter(
-            Vehicle.is_active == True,
-            Vehicle.insurance_expiry.isnot(None),
-            Vehicle.insurance_expiry <= warning_threshold
-        ).all()
-        
-        # Vehicle registration expiry
-        expiring_registration = db.query(Vehicle).filter(
-            Vehicle.is_active == True,
-            Vehicle.registration_expiry.isnot(None),
-            Vehicle.registration_expiry <= warning_threshold
-        ).all()
+        # For now, vehicle documents are in separate table
+        # Return empty lists for vehicle compliance
         
         def categorize_expiry(expiry_date):
             if expiry_date <= today:
@@ -173,34 +157,12 @@ class IntelligenceService:
                 }
                 for driver in expiring_licenses
             ],
-            "vehicle_insurance": [
-                {
-                    "vehicle_id": str(vehicle.id),
-                    "plate_number": vehicle.plate_number,
-                    "make_model": f"{vehicle.make} {vehicle.model}",
-                    "expiry_date": vehicle.insurance_expiry.isoformat(),
-                    "status": categorize_expiry(vehicle.insurance_expiry)
-                }
-                for vehicle in expiring_insurance
-            ],
-            "vehicle_registration": [
-                {
-                    "vehicle_id": str(vehicle.id),
-                    "plate_number": vehicle.plate_number,
-                    "make_model": f"{vehicle.make} {vehicle.model}",
-                    "expiry_date": vehicle.registration_expiry.isoformat(),
-                    "status": categorize_expiry(vehicle.registration_expiry)
-                }
-                for vehicle in expiring_registration
-            ],
+            "vehicle_insurance": [],  # Placeholder - would need vehicle_documents join
+            "vehicle_registration": [],  # Placeholder - would need vehicle_documents join
             "summary": {
-                "total_alerts": len(expiring_licenses) + len(expiring_insurance) + len(expiring_registration),
-                "expired": sum(1 for d in expiring_licenses if d.license_expiry <= today) +
-                          sum(1 for v in expiring_insurance if v.insurance_expiry <= today) +
-                          sum(1 for v in expiring_registration if v.registration_expiry <= today),
-                "critical": sum(1 for d in expiring_licenses if today < d.license_expiry <= critical_threshold) +
-                           sum(1 for v in expiring_insurance if today < v.insurance_expiry <= critical_threshold) +
-                           sum(1 for v in expiring_registration if today < v.registration_expiry <= critical_threshold)
+                "total_alerts": len(expiring_licenses),
+                "expired": sum(1 for d in expiring_licenses if d.license_expiry <= today),
+                "critical": sum(1 for d in expiring_licenses if today < d.license_expiry <= critical_threshold)
             }
         }
     
@@ -258,7 +220,7 @@ class IntelligenceService:
                     },
                     "vehicle": {
                         "id": str(vehicle.id),
-                        "plate_number": vehicle.plate_number,
+                        "registration_number": vehicle.registration_number,
                         "make_model": f"{vehicle.make} {vehicle.model}",
                         "year": vehicle.year
                     },
