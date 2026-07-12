@@ -273,6 +273,11 @@ Built by 2 developers in 6 hours using spec-driven development (Requirements →
 
 ---
 
+## Explainatory Video
+**Link**:https://drive.google.com/file/d/10tmXGarAlrH8onrPO3KoaNEeXDZRMKfY/view?usp=sharing
+
+---
+
 ## License
 
 MIT License - Odoo Hackathon 2026
