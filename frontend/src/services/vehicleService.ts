@@ -1,31 +1,5 @@
 import client from '@/api/client'
-
-export interface Vehicle {
-  id: string
-  plate: string
-  make: string
-  model: string
-  year: number
-  vin: string
-  status: 'available' | 'on_trip' | 'maintenance' | 'retired'
-  fuel_type: string
-  capacity: number
-  current_mileage: number
-  fuel_level: number
-  health_score: number
-  created_at: string
-  updated_at: string
-}
-
-export interface VehicleCreateRequest {
-  plate: string
-  make: string
-  model: string
-  year: number
-  vin: string
-  fuel_type: string
-  capacity: number
-}
+import type { Vehicle, VehicleCreate, VehicleUpdate, VehicleStatusUpdate, PaginatedResponse } from '@/types'
 
 class VehicleService {
   /**
@@ -36,94 +10,56 @@ class VehicleService {
     search?: string
     skip?: number
     limit?: number
-  }) {
-    try {
-      const response = await client.get<Vehicle[]>('/vehicles', { params })
-      return response.data
-    } catch (error) {
-      console.error('Error fetching vehicles:', error)
-      throw error
-    }
+  }): Promise<PaginatedResponse<Vehicle>> {
+    const response = await client.get<PaginatedResponse<Vehicle>>('/vehicles', { params })
+    return response.data
   }
 
   /**
    * Get available vehicles for dispatch
    */
-  async getAvailable() {
-    try {
-      const response = await client.get<Vehicle[]>('/vehicles/available')
-      return response.data
-    } catch (error) {
-      console.error('Error fetching available vehicles:', error)
-      throw error
-    }
+  async getAvailable(): Promise<Vehicle[]> {
+    const response = await client.get<Vehicle[]>('/vehicles/available')
+    return response.data
   }
 
   /**
    * Get vehicle by ID
    */
-  async getById(vehicleId: string) {
-    try {
-      const response = await client.get<Vehicle>(`/vehicles/${vehicleId}`)
-      return response.data
-    } catch (error) {
-      console.error('Error fetching vehicle:', error)
-      throw error
-    }
+  async getById(vehicleId: string): Promise<Vehicle> {
+    const response = await client.get<Vehicle>(`/vehicles/${vehicleId}`)
+    return response.data
   }
 
   /**
    * Create new vehicle
    */
-  async create(vehicleData: VehicleCreateRequest) {
-    try {
-      const response = await client.post<Vehicle>('/vehicles', vehicleData)
-      return response.data
-    } catch (error) {
-      console.error('Error creating vehicle:', error)
-      throw error
-    }
+  async create(vehicleData: VehicleCreate): Promise<Vehicle> {
+    const response = await client.post<Vehicle>('/vehicles', vehicleData)
+    return response.data
   }
 
   /**
    * Update vehicle
    */
-  async update(vehicleId: string, vehicleData: Partial<Vehicle>) {
-    try {
-      const response = await client.put<Vehicle>(`/vehicles/${vehicleId}`, vehicleData)
-      return response.data
-    } catch (error) {
-      console.error('Error updating vehicle:', error)
-      throw error
-    }
+  async update(vehicleId: string, vehicleData: VehicleUpdate): Promise<Vehicle> {
+    const response = await client.put<Vehicle>(`/vehicles/${vehicleId}`, vehicleData)
+    return response.data
   }
 
   /**
    * Update vehicle status
    */
-  async updateStatus(vehicleId: string, status: string) {
-    try {
-      const response = await client.patch<Vehicle>(`/vehicles/${vehicleId}/status`, {
-        status,
-      })
-      return response.data
-    } catch (error) {
-      console.error('Error updating vehicle status:', error)
-      throw error
-    }
+  async updateStatus(vehicleId: string, status: VehicleStatusUpdate): Promise<Vehicle> {
+    const response = await client.patch<Vehicle>(`/vehicles/${vehicleId}/status`, status)
+    return response.data
   }
 
   /**
    * Delete vehicle
    */
-  async delete(vehicleId: string) {
-    try {
-      await client.delete(`/vehicles/${vehicleId}`)
-      return true
-    } catch (error) {
-      console.error('Error deleting vehicle:', error)
-      throw error
-    }
+  async delete(vehicleId: string): Promise<void> {
+    await client.delete(`/vehicles/${vehicleId}`)
   }
 }
 
