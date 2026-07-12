@@ -1,48 +1,73 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from typing import Dict, Any, List
+from app.api.deps import get_db, get_current_active_user
+from app.models.user import User
+from app.services.intelligence_service import IntelligenceService
 
 router = APIRouter()
 
 
-@router.get("/dashboard-summary")
-async def get_dashboard_summary():
+@router.get("/dashboard-summary", response_model=Dict[str, Any])
+async def get_dashboard_summary(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
     """
     Get dashboard summary metrics.
-    TODO: Implement aggregation logic.
+    Returns vehicle counts, driver counts, trip stats, maintenance status, and costs.
     """
-    return {"message": "Dashboard summary - to be implemented"}
+    summary = IntelligenceService.get_dashboard_summary(db)
+    return summary
 
 
-@router.get("/fleet-health")
-async def get_fleet_health():
+@router.get("/fleet-health", response_model=Dict[str, Any])
+async def get_fleet_health(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
     """
-    Get fleet health metrics and scores.
-    TODO: Implement health score calculation.
+    Get fleet health metrics.
+    Returns vehicle status distribution and upcoming maintenance.
     """
-    return {"message": "Fleet health - to be implemented"}
+    health = IntelligenceService.get_fleet_health(db)
+    return health
 
 
-@router.get("/compliance")
-async def get_compliance():
+@router.get("/compliance", response_model=Dict[str, Any])
+async def get_compliance(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
     """
     Get compliance status and expiring documents.
-    TODO: Implement compliance tracking.
+    Returns expiring driver licenses, vehicle insurance, and registration.
     """
-    return {"message": "Compliance - to be implemented"}
+    compliance = IntelligenceService.get_compliance_alerts(db)
+    return compliance
 
 
-@router.get("/dispatch-recommendations")
-async def get_dispatch_recommendations():
+@router.get("/dispatch-recommendations", response_model=List[Dict[str, Any]])
+async def get_dispatch_recommendations(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
     """
     Get smart dispatch recommendations.
-    TODO: Implement recommendation algorithm.
+    Returns best driver/vehicle pairs based on availability and performance.
     """
-    return {"message": "Dispatch recommendations - to be implemented"}
+    recommendations = IntelligenceService.get_dispatch_recommendations(db)
+    return recommendations
 
 
-@router.get("/costs")
-async def get_cost_intelligence():
+@router.get("/costs", response_model=Dict[str, Any])
+async def get_cost_intelligence(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
     """
     Get cost intelligence and analytics.
-    TODO: Implement cost analysis.
+    Returns fuel costs, maintenance costs, revenue, and profitability.
     """
-    return {"message": "Cost intelligence - to be implemented"}
+    costs = IntelligenceService.get_cost_intelligence(db)
+    return costs
