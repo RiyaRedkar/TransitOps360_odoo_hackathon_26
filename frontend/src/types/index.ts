@@ -241,18 +241,30 @@ export interface ExpenseCreate {
 
 // Intelligence types
 export interface DashboardSummary {
-  total_vehicles: number
-  active_vehicles: number
-  on_trip_vehicles: number
-  in_shop_vehicles: number
-  total_drivers: number
-  available_drivers: number
-  on_trip_drivers: number
-  total_trips: number
-  active_trips: number
-  completed_trips_today: number
-  pending_maintenance: number
-  today_fuel_cost: number
+  vehicles: {
+    total: number
+    available: number
+    on_trip: number
+    maintenance: number
+    utilization_rate: number
+  }
+  drivers: {
+    total: number
+    available: number
+    on_trip: number
+    utilization_rate: number
+  }
+  trips: {
+    active: number
+    completed_today: number
+  }
+  maintenance: {
+    pending: number
+  }
+  costs: {
+    fuel_today: number
+    revenue_today: number
+  }
 }
 
 export interface FleetHealthItem {

@@ -108,17 +108,17 @@ export default function DashboardPage() {
 
       {/* KPI Cards */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.1 }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <KPICard title="Total Vehicles" value={summary?.total_vehicles.toString() || '0'} icon={<Truck size={24} />} description="Total fleet" />
-        <KPICard title="Available Vehicles" value={summary?.active_vehicles.toString() || '0'} icon={<TrendingUp size={24} />} description="Ready to dispatch" />
-        <KPICard title="On Trip" value={summary?.on_trip_vehicles.toString() || '0'} icon={<MapPin size={24} />} description="Currently moving" />
-        <KPICard title="In Maintenance" value={summary?.in_shop_vehicles.toString() || '0'} icon={<AlertTriangle size={24} />} description="In service" />
+        <KPICard title="Total Vehicles" value={summary?.vehicles?.total?.toString() || '0'} icon={<Truck size={24} />} description="Total fleet" />
+        <KPICard title="Available Vehicles" value={summary?.vehicles?.available?.toString() || '0'} icon={<TrendingUp size={24} />} description="Ready to dispatch" />
+        <KPICard title="On Trip" value={summary?.vehicles?.on_trip?.toString() || '0'} icon={<MapPin size={24} />} description="Currently moving" />
+        <KPICard title="In Maintenance" value={summary?.vehicles?.maintenance?.toString() || '0'} icon={<AlertTriangle size={24} />} description="In service" />
       </motion.div>
 
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.2 }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <KPICard title="Available Drivers" value={summary?.available_drivers.toString() || '0'} icon={<Users size={24} />} description={`${summary?.total_drivers || 0} total`} />
-        <KPICard title="Active Trips" value={summary?.active_trips.toString() || '0'} icon={<Activity size={24} />} description={`${summary?.completed_trips_today || 0} completed today`} />
-        <KPICard title="Today's Fuel Cost" value={`₹${(summary?.today_fuel_cost || 0).toLocaleString('en-IN')}`} icon={<DollarSign size={24} />} description="Daily expense" />
-        <KPICard title="Pending Maintenance" value={summary?.pending_maintenance.toString() || '0'} icon={<Zap size={24} />} description="Scheduled tasks" />
+        <KPICard title="Available Drivers" value={summary?.drivers?.available?.toString() || '0'} icon={<Users size={24} />} description={`${summary?.drivers?.total || 0} total`} />
+        <KPICard title="Active Trips" value={summary?.trips?.active?.toString() || '0'} icon={<Activity size={24} />} description={`${summary?.trips?.completed_today || 0} completed today`} />
+        <KPICard title="Today's Fuel Cost" value={`₹${(summary?.costs?.fuel_today || 0).toLocaleString('en-IN')}`} icon={<DollarSign size={24} />} description="Daily expense" />
+        <KPICard title="Pending Maintenance" value={summary?.maintenance?.pending?.toString() || '0'} icon={<Zap size={24} />} description="Scheduled tasks" />
       </motion.div>
 
       {/* Charts */}
