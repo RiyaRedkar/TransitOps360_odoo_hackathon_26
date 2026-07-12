@@ -1,355 +1,280 @@
-# TransitOps360 🚛
+# TransitOps360
 
-**Intelligent Fleet Operations ERP with AI-Powered Dispatch Optimization**
+**Fleet Operations ERP with Operational Intelligence**
 
-> Transform fleet chaos into operational excellence. TransitOps360 combines traditional ERP capabilities with operational intelligence—smart dispatch recommendations, predictive maintenance alerts, compliance tracking, and cost analytics—all in a single platform.
+Built in 6 hours for Odoo Hackathon 2026. Production-grade backend with smart dispatch, compliance tracking, and complete audit trails.
 
----
-
-## 🎯 The Problem
-
-Fleet operators today juggle multiple disconnected tools: spreadsheets for vehicle tracking, manual dispatch decisions, reactive maintenance, and compliance blind spots. This fragmentation leads to:
-- **Suboptimal dispatch decisions** costing 15-20% in fuel efficiency
-- **Reactive maintenance** causing unexpected downtime
-- **Compliance violations** from missed license/insurance renewals
-- **Zero visibility** into fleet health and cost drivers
-
-## ✨ Our Solution
-
-TransitOps360 is a unified fleet operations platform that doesn't just track—it **thinks**. Built on three core modules:
-
-### 🚗 Fleet Management
-- Vehicle & driver lifecycle management
-- Real-time status tracking (Available, On Trip, In Shop, Retired)
-- Document management with expiry tracking
-- Health score calculation (0-100) based on maintenance, age, and efficiency
-
-### 📋 Operations Management
-- Trip creation and smart dispatch workflow
-- Maintenance request automation (opens → vehicle to In Shop → closes → vehicle to Available)
-- Fuel consumption and expense tracking
-- Business rule enforcement (capacity checks, availability validation, license expiry)
-
-### 🧠 Operational Intelligence
-- **Smart Dispatch Engine**: AI-powered vehicle-driver matching (40% capacity + 30% fuel efficiency + 20% health + 10% availability)
-- **Fleet Health Dashboard**: Predictive maintenance insights and utilization analytics
-- **Compliance Center**: Proactive alerts for expiring documents (30-day window)
-- **Cost Intelligence**: ROI tracking, overspend identification, cost-per-km analytics
-- **Command Center**: Real-time operational alerts (overdue maintenance, underutilized assets, fuel spikes)
-- **Activity Timeline**: Complete audit trail of all system actions
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React_19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL_15-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
 ---
 
-## 🏗️ System Architecture
+## 📊 What We Built
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  React 19 Frontend (TypeScript + TailwindCSS + shadcn/ui)  │
-│  • Role-based dashboards  • Real-time charts  • Forms      │
-└────────────────────────┬────────────────────────────────────┘
-                         │ REST API (JWT Auth)
-┌────────────────────────┴────────────────────────────────────┐
-│  FastAPI Backend (Python 3.12+)                             │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
-│  │   Routers    │→ │   Services   │→ │ Repositories │     │
-│  │ (API Layer)  │  │ (Business    │  │ (Data Access)│     │
-│  │              │  │  Logic)      │  │              │     │
-│  └──────────────┘  └──────────────┘  └──────┬───────┘     │
-└────────────────────────────────────────────────┼────────────┘
-                                                 │
-                         ┌───────────────────────┴─────────────┐
-                         │  PostgreSQL 15 (SQLAlchemy ORM)    │
-                         │  • 12 normalized tables             │
-                         │  • State machines (enums)           │
-                         │  • Event-driven audit (immutable)   │
-                         └─────────────────────────────────────┘
-```
+| Metric | Count |
+|--------|-------|
+| REST Endpoints | 42 |
+| Database Tables | 12 |
+| Business Services | 8 |
+| State Machines | 3 |
+| Lines of Code | ~4,300 |
+| Build Time | 6 hours |
 
-**Design Principles**:
-- **Strict Layering**: Router → Service → Repository (business logic ONLY in services)
-- **Event-Driven Audit**: Every action generates immutable event records
-- **State Machines**: Enum-enforced status transitions (prevents invalid states)
-- **API-First**: OpenAPI spec auto-generated, frontend consumes typed contracts
+**Status**: ✅ Backend complete (42 endpoints working) · 🚧 Frontend in progress
 
 ---
 
-## 🛠️ Technology Stack
+## The Problem
 
-| Layer | Technologies |
-|-------|-------------|
-| **Frontend** | React 19, TypeScript, Vite, TailwindCSS, shadcn/ui, TanStack Query, React Hook Form, Zod, Recharts |
-| **Backend** | FastAPI, Python 3.12+, Pydantic v2, SQLAlchemy 2.0, Alembic, python-jose (JWT), bcrypt |
-| **Database** | PostgreSQL 15, UUID primary keys, JSONB metadata, GIN indexes |
-| **DevOps** | Docker, Docker Compose, Uvicorn, PostgreSQL container |
-| **Testing** | Pytest, Hypothesis (property-based testing for business rules) |
+- Manual dispatch wastes 10-15% fuel efficiency
+- Reactive maintenance causes downtime
+- Missed renewals = compliance violations
+- Zero audit trail when issues arise
 
 ---
 
-## 🧩 Core Business Rules
+## Our Solution
 
-TransitOps360 enforces real-world operational constraints:
+**Unified control plane** that combines ERP fundamentals with operational intelligence:
 
-### Trip Dispatch Validation
-```python
-✓ Cargo weight ≤ vehicle capacity
-✓ Vehicle status = "Available" (not On Trip, In Shop, or Retired)
-✓ Driver status = "Available" (not On Trip, Off Duty, or Suspended)
-✓ Driver license not expired
-✓ No overlapping trips for same vehicle/driver
-```
+- **Smart Dispatch**: Multi-factor scoring (capacity 40%, fuel 30%, health 20%, availability 10%)
+- **Fleet Health**: Dynamic 0-100 scores based on maintenance, age, efficiency
+- **Compliance Alerts**: 30-day proactive warnings for expiring documents
+- **Cost Intelligence**: Per-vehicle ROI and profit analysis
+- **Audit Timeline**: Immutable event log with JSONB metadata
+- **Auto-Status Management**: Maintenance opens → vehicle to "In Shop", closes → "Available"
 
-### State Machine Enforcement
-```
-Vehicle: Available → On Trip → Available
-         Available → In Shop → Available
-         Available → Retired (terminal)
+---
 
-Driver:  Available → On Trip → Available
-         Available ↔ Off Duty
-         Available ↔ Suspended
+## What Makes This Different
 
-Trip:    Draft → Dispatched → Completed
-         Draft → Cancelled
-         Dispatched → Cancelled
+
+1. **Algorithmic decision support** - Not CRUD, actual scoring recommendations
+2. **15+ business rules** - Enforced at DB, service, and API layers
+3. **Event-driven architecture** - Every action generates immutable audit records
+4. **State machine enforcement** - PostgreSQL enums + service validation prevent invalid transitions
+5. **Real operational intelligence** - Dashboard aggregates data for actionable insights
+
+---
+
+## Architecture
+
+```mermaid
+graph TB
+    subgraph Frontend["Frontend"]
+        UI[React 19 + TypeScript<br/>TanStack Query + shadcn/ui]
+    end
+    
+    subgraph API["API Layer"]
+        Auth[JWT + RBAC]
+        Routes[42 REST Endpoints]
+    end
+    
+    subgraph Services["Business Logic"]
+        VS[VehicleService]
+        TS[TripService]
+        IS[IntelligenceService]
+        ES[EventService]
+    end
+    
+    subgraph Data["Data Layer"]
+        Repos[Repository Pattern]
+        DB[(PostgreSQL 15<br/>12 Tables)]
+    end
+    
+    UI --> Routes
+    Routes --> Auth
+    Routes --> Services
+    Services --> Repos
+    VS --> ES
+    TS --> ES
+    Services --> DB
+    ES --> DB
+    
+    style Frontend fill:#e3f2fd
+    style API fill:#fff3e0
+    style Services fill:#f1f8e9
+    style Data fill:#fce4ec
 ```
 
-### Maintenance Workflow
-- **Open Maintenance** → Vehicle status transitions to "In Shop" (auto-blocks dispatch)
-- **Close Maintenance** → Vehicle status returns to "Available" (re-enables dispatch)
+**Strict layering**: Router → Service → Repository → Database (zero violations)
 
 ---
 
-## 📊 Database Design Highlights
+## Core Features
 
-**12 Normalized Tables** with strategic indexing:
+### ✅ Implemented
 
-| Table | Key Features |
-|-------|--------------|
-| `vehicles` | UUID PK, unique registration_number, health_score (0-100), status enum, soft delete |
-| `drivers` | UUID PK, unique license_number, license_expiry, safety_score (0-100), status enum |
-| `trips` | UUID PK, vehicle_id FK, driver_id FK, status enum, timestamps (dispatched_at, completed_at) |
-| `maintenance_logs` | UUID PK, vehicle_id FK, status enum, cost tracking, completion timestamp |
-| `fuel_logs` | Immutable records, odometer_reading, cost_per_unit (calculated), efficiency tracking |
-| `events` | Immutable audit trail, JSONB metadata, entity_type + entity_id indexed |
+- **Fleet Management**: Vehicle/driver CRUD, status tracking, document expiry
+- **Operations**: Trip dispatch with validation, maintenance workflow automation
+- **Intelligence**: Smart dispatch scoring, health engine, compliance center, cost analytics
+- **Audit**: Complete event trail with JSONB metadata
+- **Security**: JWT auth, bcrypt passwords, RBAC (4 roles)
 
-**Index Strategy** (15+ indexes for performance):
-- `vehicles.status` (filter available vehicles)
-- `drivers.status, license_expiry` (dispatch eligibility)
-- `events(entity_type, entity_id)` (timeline queries)
-- `trips.status, dispatched_at` (active trips, chronological)
+### 🔮 Future
 
-**Referential Integrity**:
-- CASCADE deletes for child records (documents, logs)
-- RESTRICT deletes for active operational data (trips with assigned vehicles)
-- SET NULL for audit trail preservation (created_by references)
+- Real-time WebSocket notifications
+- ML-based predictive maintenance
+- Mobile PWA for drivers
+- Multi-tenant architecture
 
 ---
 
-## 🤖 Smart Dispatch Recommendation Engine
+## Engineering Highlights
 
-**Multi-Factor Scoring Algorithm**:
 
-```python
-score = (0.40 × capacity_match) +
-        (0.30 × fuel_efficiency) +
-        (0.20 × health_score) +
-        (0.10 × availability_score)
+**Repository-Service Pattern**: Business logic isolated from data access for testability
+
+**Event-Driven Audit**: Every action generates immutable events with JSONB metadata for complete traceability
+
+**State Machines**: PostgreSQL ENUMs + service validation enforce valid transitions (Vehicle, Driver, Trip)
+
+**Smart Dispatch**: Deterministic weighted scoring algorithm (explainable, debuggable, predictable)
+
+**JWT + RBAC**: Stateless auth with 4 roles (Fleet Manager, Dispatcher, Safety Officer, Financial Analyst)
+
+---
+
+## Database
+
+```mermaid
+erDiagram
+    users ||--o{ vehicles : creates
+    users ||--o{ drivers : creates
+    users ||--o{ trips : creates
+    users ||--o{ events : performs
+    
+    vehicles ||--o{ trips : assigned
+    vehicles ||--o{ maintenance_logs : has
+    vehicles ||--o{ fuel_logs : tracks
+    
+    drivers ||--o{ trips : assigned
+    
+    trips }o--|| vehicles : uses
+    trips }o--|| drivers : uses
+    
+    vehicles {
+        uuid id
+        string registration
+        enum status
+        int health_score
+    }
+    
+    drivers {
+        uuid id
+        string license
+        date expiry
+        enum status
+    }
+    
+    trips {
+        uuid id
+        enum status
+        decimal cargo_kg
+    }
+    
+    events {
+        uuid id
+        string type
+        jsonb metadata
+    }
 ```
 
-**How It Works**:
-1. **Capacity Match (40%)**: Penalizes underutilization (cargo << capacity) and overloading
-2. **Fuel Efficiency (30%)**: Prioritizes vehicles with better km/L ratings
-3. **Health Score (20%)**: Factors in maintenance frequency, age, and condition
-4. **Availability (10%)**: Ensures vehicle/driver are dispatch-ready
-
-**Business Impact**: Reduces fuel costs by 15-20% and prevents asset overutilization.
+**12 tables** · **20+ indexes** · **UUID PKs** · **Soft deletes** · **JSONB metadata** · **CASCADE/RESTRICT rules**
 
 ---
 
-## 🏥 Fleet Health Engine
+## Demo Flow
 
-**Dynamic Health Score Calculation** (0-100):
-
-```python
-base_score = 100
-if overdue_maintenance:     score -= 20
-if age > 5 years:           score -= 10
-if maintenance_freq > 4/yr: score -= 15
-if fuel_efficiency < avg:   score -= 10
-return max(0, score)
-```
-
-**Dashboard Metrics**:
-- Vehicle status distribution (Available, On Trip, In Shop, Retired)
-- Utilization trends (7-day rolling average)
-- Maintenance backlog and cost projections
-- Fuel efficiency comparisons (vehicle vs fleet average)
+1. **Login** with admin/admin123
+2. **Create vehicle** MH12AB1234, Tata Ace, 1200kg
+3. **Create driver** with license expiry 2025-12-31
+4. **Create trip** Mumbai → Pune, 800kg cargo
+5. **Get recommendations** - see scored vehicle-driver pairs
+6. **Dispatch trip** - watch statuses auto-update to "On Trip"
+7. **Open maintenance** - vehicle auto-transitions to "In Shop"
+8. **View timeline** - see complete audit trail with metadata
 
 ---
 
-## 📋 Compliance Center
+## Odoo Alignment
 
-**Proactive Document Expiry Tracking**:
 
-| Document Type | Warning Threshold | Action |
-|---------------|-------------------|--------|
-| Driver License | 30 days | Block dispatch, send alert |
-| Vehicle Insurance | 30 days | Flag non-compliant, notify admin |
-| Fitness Certificate | 30 days | Restrict vehicle usage |
-| PUC (Pollution) | 30 days | Compliance warning |
+- **Unified data model** - Single source of truth, referential integrity
+- **Modular architecture** - Clear module boundaries (Fleet, Operations, Intelligence)
+- **Business automation** - Maintenance/dispatch workflows auto-update statuses
+- **Audit trail** - Event logging similar to Odoo's chatter system
+- **RBAC** - Role-based permissions like Odoo's group security
 
-**Compliance Dashboard**:
-- Expiring documents (next 30 days)
-- Overdue renewals (critical alerts)
-- Driver license status (valid, expiring, expired)
-- Vehicle document health (compliant, at-risk, non-compliant)
+**Integration potential**: Accounting (trip revenue → journal entries), HR (drivers → employees), Inventory (parts → stock)
 
 ---
 
-## 📜 Activity Timeline & Audit System
-
-**Immutable Event Log** for complete operational transparency:
-
-**Event Types**:
-- `VEHICLE_CREATED`, `VEHICLE_STATUS_CHANGED`, `VEHICLE_RETIRED`
-- `DRIVER_CREATED`, `DRIVER_STATUS_CHANGED`
-- `TRIP_CREATED`, `TRIP_DISPATCHED`, `TRIP_COMPLETED`, `TRIP_CANCELLED`
-- `MAINTENANCE_OPENED`, `MAINTENANCE_CLOSED`
-- `FUEL_LOGGED`, `EXPENSE_LOGGED`
-
-**JSONB Metadata** stores action-specific details:
-```json
-{
-  "trip_id": "uuid",
-  "vehicle": {"registration": "MH12AB1234", "status_change": "Available → On Trip"},
-  "driver": {"name": "John Doe", "license": "DL1234567890"},
-  "cargo_weight_kg": 1200,
-  "distance_km": 150
-}
-```
-
-**Query Capabilities**:
-- Global activity timeline (recent 50 events)
-- Entity-specific timeline (all events for vehicle/driver/trip)
-- User action history (audit user behavior)
-- Event type filtering (show only dispatch events)
-
----
-
-## 📸 Screenshots
-
-### Dashboard
-*[Role-based metrics, fleet health chart, compliance alerts, activity feed]*
-
-### Smart Dispatch
-*[Vehicle/driver selection with AI recommendations, capacity validation, dispatch confirmation]*
-
-### Fleet Health
-*[Health score visualization, utilization trends, maintenance schedule]*
-
-### Compliance Center
-*[Expiring documents table, warning badges, renewal actions]*
-
-### Activity Timeline
-*[Chronological event list with entity icons, filterable by type/date]*
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Docker & Docker Compose
-- Node.js 20+ (frontend)
-- Python 3.12+ (backend)
-- PostgreSQL 15 (or use Docker container)
-
-### Setup (5 minutes)
+## Quick Start
 
 ```bash
-# 1. Clone repository
-git clone <repository-url>
-cd transitops360
-
-# 2. Start PostgreSQL
+# Database
 docker-compose up -d postgres
 
-# 3. Setup Backend
+# Backend
 cd backend
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+python -m venv venv && source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env
 alembic upgrade head
 python scripts/seed_data.py
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --port 8001
 
-# 4. Setup Frontend (new terminal)
+# Frontend
 cd frontend
-npm install
-cp .env.example .env
-npm run dev
+npm install && npm run dev
 ```
 
-### Access
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:8000
-- **API Docs**: http://localhost:8000/docs (Swagger UI)
-
-### Demo Credentials
-```
-Email: admin@transit.com
-Password: admin123
-Role: Fleet Manager (full access)
-```
+**Access**: http://localhost:5173 · **API Docs**: http://localhost:8001/docs · **Login**: admin/admin123
 
 ---
 
-## 👥 Team & Contributions
+## Tech Stack
 
-**2-Developer Team** (6-hour hackathon):
-
-| Developer | Role | Contributions |
-|-----------|------|---------------|
-| **Developer A** | Frontend Lead | React architecture, UI components, dashboard charts, form validation, API integration |
-| **Developer B** | Backend Lead | FastAPI services, business logic, database design, dispatch algorithm, migrations, testing |
-
-**Methodology**: Spec-driven development with parallel work streams, hourly commits, integration checkpoints every 60 minutes.
+**Backend**: FastAPI · SQLAlchemy 2.0 · Alembic · Pydantic · python-jose · bcrypt  
+**Frontend**: React 19 · TypeScript · TanStack Query · shadcn/ui · TailwindCSS  
+**Database**: PostgreSQL 15 · UUID PKs · JSONB · ENUMs  
+**DevOps**: Docker Compose
 
 ---
 
-## 🔮 Future Roadmap
+## Team
 
-### Phase 1 (Post-Hackathon)
-- [ ] Real-time WebSocket notifications (trip status updates)
-- [ ] CSV/PDF export (utilization reports, cost analysis)
-- [ ] Bulk operations (multi-select status updates)
+Built by 2 developers in 6 hours using spec-driven development (Requirements → Design → Tasks → Implementation).
 
-### Phase 2 (Production)
-- [ ] Google Maps integration (route optimization, geofencing)
-- [ ] Predictive maintenance (ML-based failure prediction)
-- [ ] Mobile-responsive PWA (offline support)
-- [ ] Multi-tenant architecture (fleet owner isolation)
-
-### Phase 3 (Scale)
-- [ ] GPS telematics integration (real-time tracking)
-- [ ] Driver mobile app (trip updates, fuel logging)
-- [ ] Advanced analytics (Power BI integration)
-- [ ] Payment gateway integration (automated invoicing)
+**Backend**: FastAPI architecture, business logic, dispatch algorithm, migrations, 42 endpoints  
+**Frontend**: React setup, component library, API integration, charts
 
 ---
 
-## 📄 License
+## Future Vision
 
-MIT License - Built for Odoo Hackathon 2026
-
----
-
-## 🙏 Acknowledgments
-
-Built with ❤️ in 6 hours for the Odoo Hackathon 2026. Special thanks to the open-source community for amazing tools: FastAPI, React, PostgreSQL, TailwindCSS, and shadcn/ui.
+**Short term**: Complete frontend, unit tests, WebSocket notifications  
+**Medium term**: ML predictive maintenance, route optimization, PWA  
+**Long term**: Multi-tenant SaaS, driver mobile app, telematics integration
 
 ---
 
-**⭐ If this project impressed you, please star the repository!**
+## 🏆 Why TransitOps360
 
-**📧 Contact**: transitops360@example.com | **🌐 Demo**: [Coming Soon]
+- Goes beyond CRUD with operational decision support
+- Enforces real-world fleet business rules
+- Complete auditability through event-driven architecture
+- ERP-aligned modular design
+- Built with production-grade engineering practices
+
+---
+
+## License
+
+MIT License - Odoo Hackathon 2026
+
+---
+
+Built for Odoo Hackathon 2026.
