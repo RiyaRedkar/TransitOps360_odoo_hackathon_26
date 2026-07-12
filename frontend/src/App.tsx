@@ -8,6 +8,7 @@ import TripsPage from './pages/TripsPage'
 import MaintenancePage from './pages/MaintenancePage'
 import CompliancePage from './pages/CompliancePage'
 import AnalyticsPage from './pages/AnalyticsPage'
+import SettingsPage from './pages/SettingsPage'
 
 // Protected Route Component
 function ProtectedRoute() {
@@ -32,6 +33,7 @@ function App() {
         <Route path="/maintenance" element={<MaintenancePage />} />
         <Route path="/compliance" element={<CompliancePage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
       </Route>
     </Routes>
   )
