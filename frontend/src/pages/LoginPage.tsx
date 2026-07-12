@@ -46,11 +46,6 @@ export default function LoginPage() {
       setLoading(false)
     }
   }
-      const errorMessage = err.response?.data?.detail || 'Login failed. Please try again.'
-      setError(errorMessage)
-      setLoading(false)
-    }
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0F172A] via-[#111827] to-[#0F172A] flex items-center justify-center p-4 overflow-hidden">
