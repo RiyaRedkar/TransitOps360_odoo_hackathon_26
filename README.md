@@ -22,7 +22,9 @@ Built for Odoo Hackathon 2026. A modern fleet operations ERP combining business 
 | Lines of Code | ~4,300 |
 | Build Time | 6 hours |
 
-**Status**: ✅ Backend complete (42 endpoints working) · 🚧 Frontend in progress
+**Status**: ✅ Backend complete (42 endpoints working) · ✅ Frontend complete (100% integrated)
+
+> 📖 **[Full Documentation →](./docs/)** | Guides, troubleshooting, API docs, and more
 
 ---
 
