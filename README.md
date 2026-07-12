@@ -11,6 +11,11 @@ Built for Odoo Hackathon 2026. A modern fleet operations ERP combining business 
 
 ---
 
+## Explainatory Video
+**Link**:https://drive.google.com/file/d/10tmXGarAlrH8onrPO3KoaNEeXDZRMKfY/view?usp=sharing
+
+---
+
 ## 📊 What We Built
 
 | Metric | Count |
@@ -270,11 +275,6 @@ Built by 2 developers in 6 hours using spec-driven development (Requirements →
 - Complete auditability through event-driven architecture
 - ERP-aligned modular design
 - Built with production-grade engineering practices
-
----
-
-## Explainatory Video
-**Link**:https://drive.google.com/file/d/10tmXGarAlrH8onrPO3KoaNEeXDZRMKfY/view?usp=sharing
 
 ---
 
