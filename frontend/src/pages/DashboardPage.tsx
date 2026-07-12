@@ -71,14 +71,14 @@ export default function DashboardPage() {
     )
   }
 
-  const tripStatusData = tripsData ? [
+  const tripStatusData = tripsData?.items ? [
     { name: 'Completed', value: tripsData.items.filter(t => t.status === 'Completed').length, fill: '#22C55E' },
     { name: 'Dispatched', value: tripsData.items.filter(t => t.status === 'Dispatched').length, fill: '#0EA5E9' },
     { name: 'Draft', value: tripsData.items.filter(t => t.status === 'Draft').length, fill: '#F59E0B' },
     { name: 'Cancelled', value: tripsData.items.filter(t => t.status === 'Cancelled').length, fill: '#EF4444' },
   ].filter(item => item.value > 0) : []
 
-  const recentTrips = tripsData?.items.slice(0, 4).map(trip => ({
+  const recentTrips = tripsData?.items?.slice(0, 4).map(trip => ({
     id: trip.id.substring(0, 8),
     origin: trip.origin,
     destination: trip.destination,
