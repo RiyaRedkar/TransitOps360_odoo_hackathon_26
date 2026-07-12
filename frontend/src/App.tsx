@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { Toaster } from 'sonner'
 import { AppLayout } from './components/layout/AppLayout'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
@@ -26,22 +27,25 @@ function ProtectedRoute() {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route element={<ProtectedRoute />}>
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/vehicles" element={<VehiclesPage />} />
-        <Route path="/drivers" element={<DriversPage />} />
-        <Route path="/trips" element={<TripsPage />} />
-        <Route path="/maintenance" element={<MaintenancePage />} />
-        <Route path="/compliance" element={<CompliancePage />} />
-        <Route path="/analytics" element={<AnalyticsPage />} />
-        <Route path="/reports" element={<ReportsPage />} />
-        <Route path="/fuel" element={<FuelPage />} />
-        <Route path="/expenses" element={<ExpensesPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-      </Route>
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/vehicles" element={<VehiclesPage />} />
+          <Route path="/drivers" element={<DriversPage />} />
+          <Route path="/trips" element={<TripsPage />} />
+          <Route path="/maintenance" element={<MaintenancePage />} />
+          <Route path="/compliance" element={<CompliancePage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/fuel" element={<FuelPage />} />
+          <Route path="/expenses" element={<ExpensesPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Route>
+      </Routes>
+      <Toaster position="top-right" richColors closeButton />
+    </>
   )
 }
 
